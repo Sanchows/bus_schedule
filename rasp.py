@@ -6,6 +6,7 @@ def get_html(url):
     return r.text
 
 def get_list_napr(html):
+    """Получает список направлений движения автобуса (len = 2)"""
     list_napr = []
     soup = BeautifulSoup(html, 'lxml')
     naprs = soup.find('ul', class_='tabs_vov').find_all('li')
@@ -62,13 +63,12 @@ def search_ost(list_rasp, ostanovka):
                 for key, value in rasp.items():
                     data.append(key + value)
                 return data
-    
     return False
 
 def get_numbers_autobus():
     numbers = []
     soup = BeautifulSoup(get_html("https://vovremia.com/baranovichi/avtobus"), 'lxml')
-    divs = soup.find('div', class_ = 'content_right').find_all('div', class_='block_bus')
+    divs = soup.find_all('div', class_='block_bus')
     for div in divs:
         number = div.find('p', class_='font1').text.split(' ')[2]
         numbers.append(number)
