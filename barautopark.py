@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 class BarAutoPark():
     def __init__(self, num_bus = None):
         self.num_bus = num_bus
-
+        
 
     def __str__(self):
         return str(self.num_bus)
@@ -33,44 +33,46 @@ class BarAutoPark():
 
         for div in divs:
             number = div.find('p', class_='font1').text.split(' ')[2]
+            if number == '24':
+                continue
             numbers.append(number)
 
         return numbers
 
 
-    def get_list_napr(self):
+    def get_list_dirs(self):
         """
         Возвращает список направлений маршрута.
         """
 
-        list_napr = []
+        list_directions = []
         html = self.get_html(f"https://vovremia.com/baranovichi/avtobus/{self.num_bus}")
         soup = BeautifulSoup(html, 'lxml')
 
-        naprs = soup.find('ul', class_='tabs_vov').find_all('li')
+        directions = soup.find('ul', class_='tabs_vov').find_all('li')
         
-        for napr in naprs:
-            napr_name = napr.text
-            list_napr.append(napr_name)
+        for direction in directions:
+            direction_name = direction.text
+            list_directions.append(direction_name)
         
-        return list_napr
+        return list_directions
 
 
-    def get_list_ost(self, napr):
+    def get_list_ost(self, direction):
         """
         Возвращает список названий остановок.
         
-        napr - направление маршрута, int (1 or 2).       
+        direction - направление маршрута, int (1 or 2).       
         """
 
-        if napr < 1 or napr > 2:
+        if direction < 1 or direction > 2:
             return False
 
         list_ost = []
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
 
-        osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[napr-1].find('div', id='nav')
+        osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
         name_osts = osts.find_all('strong')
 
         for ost in name_osts:
@@ -83,21 +85,20 @@ class BarAutoPark():
             return list_ost
 
 
-    def get_all_rasp(self, napr=1):
+    def get_all_rasp(self, direction=1):
         """
         Возвращает расписание автобуса на всех остановках маршрута.
 
-        napr - направление маршрута, int (1 or 2).
+        direction - направление маршрута, int (1 or 2).
         """
 
         rasp = []
-
-        list_ost = self.get_list_ost(napr)
+        list_ost = self.get_list_ost(direction)
         
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
 
-        times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[napr-1].find('div', id='nav')
+        times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
         monday_sunday = times.find_all('div', class_='subnav')
 
         for day in monday_sunday:
