@@ -3,5 +3,5 @@
 Get route numbers only using special method "get_numbers_autobus":<br>
 </h5>
 <code>
-  numbers = BarAutoPark.get_numbers_autobus()
+  numbers = BarAutoPark().get_numbers_autobus()
 </code>
