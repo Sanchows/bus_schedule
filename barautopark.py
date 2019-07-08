@@ -71,13 +71,20 @@ class BarAutoPark():
         list_ost = []
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
+        
+        if self.num_bus == 26: # special page layout
+            osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find_all('strong')
+            for ost in osts:
+                list_ost.append(ost.text)
 
-        osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
-        name_osts = osts.find_all('strong')
+        else:
+            osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
+            name_osts = osts.find_all('strong')
 
-        for ost in name_osts:
-            name_ost = ost.text.strip('+')
-            list_ost.append(name_ost)
+            for ost in name_osts:
+                name_ost = ost.text.strip('+')
+                list_ost.append(name_ost)
+            
 
         if not list_ost:
             return False
@@ -94,17 +101,16 @@ class BarAutoPark():
 
         rasp = []
         list_ost = self.get_list_ost(direction)
-        
+
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
+        if self.num_bus == 26: # special page layout
+            times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div')
+            monday_sunday = times.find_all('div')[-2:]
+            ost = list_ost[0]
+            monday = monday_sunday[0].text.lstrip('Рабочие дни')
+            sunday = monday_sunday[1].text.lstrip('Выходные дни')
 
-        times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
-        monday_sunday = times.find_all('div', class_='subnav')
-
-        for day in monday_sunday:
-            ost = list_ost[monday_sunday.index(day)]
-            monday = day.find('div', class_='monday_bus').text.lstrip('Рабочие дни')
-            sunday = day.find('div', class_='sunday_bus').text.lstrip('Выходные дни')
             if sunday == 'курсирует':
                 sunday = 'Не курсирует'
             if monday == 'курсирует':
@@ -114,7 +120,26 @@ class BarAutoPark():
                     'Рабочие дни: ': monday,
                     'Выходные дни: ': sunday,
                 }
-            rasp.append(data)
+            rasp.append(data)     
+
+        else:
+            times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
+            monday_sunday = times.find_all('div', class_='subnav')
+
+            for day in monday_sunday:
+                ost = list_ost[monday_sunday.index(day)]
+                monday = day.find('div', class_='monday_bus').text.lstrip('Рабочие дни')
+                sunday = day.find('div', class_='sunday_bus').text.lstrip('Выходные дни')
+                if sunday == 'курсирует':
+                    sunday = 'Не курсирует'
+                if monday == 'курсирует':
+                    monday = 'Не курсирует'
+
+                data = {'Остановка: ': ost,
+                        'Рабочие дни: ': monday,
+                        'Выходные дни: ': sunday,
+                    }
+                rasp.append(data)
 
         return rasp
 
