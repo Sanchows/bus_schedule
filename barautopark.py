@@ -72,7 +72,7 @@ class BarAutoPark():
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
         
-        if self.num_bus == 26: # special page layout
+        if int(self.num_bus) == 26: # special page layout
             osts = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find_all('strong')
             for ost in osts:
                 list_ost.append(ost.text)
@@ -104,7 +104,7 @@ class BarAutoPark():
 
         html = self.get_html(f'https://vovremia.com/baranovichi/avtobus/{self.num_bus}')
         soup = BeautifulSoup(html, 'lxml')
-        if self.num_bus == 26: # special page layout
+        if int(self.num_bus) == 26: # special page layout
             times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div')
             monday_sunday = times.find_all('div')[-2:]
             ost = list_ost[0]

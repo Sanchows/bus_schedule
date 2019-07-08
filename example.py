@@ -20,14 +20,14 @@ def main():
 
         bus = BarAutoPark(num_bus = number_autobus)
 
-        list_napr = bus.get_list_napr()
+        list_dirs = bus.get_list_dirs()
         print('\n\tНаправления:')
-        for napr in list_napr:
-            print('\t{0}: {1}'.format(list_napr.index(napr)+1, napr))
+        for dirc in list_dirs:
+            print('\t{0}: {1}'.format(list_dirs.index(dirc)+1, dirc))
     
         while True:
-            napr = int(input("Направление (1 или 2): "))
-            list_ost = bus.get_list_ost(napr)
+            dirc = int(input("Направление (1 или 2): "))
+            list_ost = bus.get_list_ost(dirc)
 
             print('\n\tСписок остановок:')
             for ost in list_ost:
@@ -45,7 +45,7 @@ def main():
             break
         break
 
-    list_rasp = bus.get_all_rasp(napr)
+    list_rasp = bus.get_all_rasp(dirc)
     rasp = bus.get_rasp(list_rasp, ost)
     
     if not rasp:
