@@ -33,8 +33,9 @@ class BarAutoPark():
 
         for div in divs:
             number = div.find('p', class_='font1').text.split(' ')[2]
-            if number == '24':
+            if number == '24' or number == '27':
                 continue
+
             numbers.append(number)
 
         return numbers
@@ -120,7 +121,10 @@ class BarAutoPark():
                     'Рабочие дни: ': monday,
                     'Выходные дни: ': sunday,
                 }
-            rasp.append(data)     
+            rasp.append(data)
+        
+        elif int(self.num_bus) == 27: # special page layot (page is not have div block 'monday_bus' and 'sunday_bus')
+            pass
 
         else:
             times = soup.find('div', class_='rasp_huk').find_all('div', class_='tab_box')[direction-1].find('div', id='nav')
