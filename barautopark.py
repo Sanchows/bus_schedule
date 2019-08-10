@@ -164,7 +164,7 @@ class BarAutoPark():
         return False
 
     def find_nearest(self, time_now, list_rasp):
-        if list_rasp[0] == 'Не курсирует':
+        if 'Не курсирует' in list_rasp[0]:
             return None
 
         time_now_hours = time_now.split(':')[0]
@@ -173,7 +173,7 @@ class BarAutoPark():
 
         for time in list_rasp:
             hours = time.split(':')[0]
-            mins = time.split(':')[1]
+            mins = time.split(':')[1][:2]
 
             time_depart = int(hours + mins)
             
@@ -184,6 +184,6 @@ class BarAutoPark():
                 return 'Отправляется прям щас!!'
 
             elif time_depart > time_now_new:
-                return time
+                return f'{hours}:{mins}'
 
         return 'На сегодня нет автобусов'
