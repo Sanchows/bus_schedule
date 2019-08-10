@@ -156,9 +156,34 @@ class BarAutoPark():
         list_rasp - список от get_all_rasp(), list.
         name_ost - название остановки, str.
         """
-
+        
         for rasp in list_rasp:
             if rasp['Остановка: '] == name_ost:
                 return rasp
 
         return False
+
+    def find_nearest(self, time_now, list_rasp):
+        if list_rasp[0] == 'Не курсирует':
+            return None
+
+        time_now_hours = time_now.split(':')[0]
+        time_now_mins = time_now.split(':')[1]
+        time_now_new = int(time_now_hours + time_now_mins)
+
+        for time in list_rasp:
+            hours = time.split(':')[0]
+            mins = time.split(':')[1]
+
+            time_depart = int(hours + mins)
+            
+            if time_depart < time_now_new:
+                continue
+
+            elif time_depart == time_now_new:
+                return 'Отправляется прям щас!!'
+
+            elif time_depart > time_now_new:
+                return time
+
+        return 'На сегодня нет автобусов'
