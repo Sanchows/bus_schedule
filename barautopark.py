@@ -138,6 +138,9 @@ class BarAutoPark():
                     sunday = 'Не курсирует'
                 if monday == 'курсирует':
                     monday = 'Не курсирует'
+                
+                if self.num_bus == '1': # very bad layout !!! >_<
+                    monday = monday.rstrip('Выделенный рейс следует до кл. Русино')
 
                 data = {'Остановка: ': ost,
                         'Рабочие дни: ': monday,
@@ -173,7 +176,7 @@ class BarAutoPark():
 
         for time in list_rasp:
             hours = time.split(':')[0]
-            mins = time.split(':')[1][:2]
+            mins = time.split(':')[1]
 
             time_depart = int(hours + mins)
             
@@ -181,7 +184,7 @@ class BarAutoPark():
                 continue
 
             elif time_depart == time_now_new:
-                return 'Отправляется прям щас!!'
+                return 'Отправляется прямо сейчас'
 
             elif time_depart > time_now_new:
                 return f'{hours}:{mins}'
