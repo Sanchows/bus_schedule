@@ -184,9 +184,11 @@ class BarAutoPark():
                 continue
 
             elif time_depart == time_now_new:
-                return 'Отправляется прямо сейчас'
+                return 'Автобус отправляется прямо сейчас'
 
             elif time_depart > time_now_new:
-                return f'{hours}:{mins}'
+                return f'Ближайший автобус в {hours}:{mins}'
 
-        return 'На сегодня нет автобусов'
+        return '✖ На сегодня нет автобусов'
+
+        
